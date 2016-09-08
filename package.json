@@ -1,8 +1,8 @@
 {
   "name": "ecsol",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Solidity Elliptic Curve Library",
-  "main": "index.js",
+  "main": "ec_helper.js",
   "directories": {
     "test": "test"
   },
