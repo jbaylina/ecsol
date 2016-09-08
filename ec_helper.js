@@ -2,13 +2,14 @@
 "use strict";
 
 var async = require('async');
-var ethConnector = require('./eth_connector');
+var ethConnector = require('ethconnector');
+var path = require('path');
 
-exports.deployECCurve = function(opts, cb) {
+exports.deploy = function(opts, cb) {
     var compilationResult;
     return async.waterfall([
         function(cb) {
-            ethConnector.loadSol("eccurve.sol", cb);
+            ethConnector.loadSol(path.join(__dirname, "ec.sol"), cb);
         },
         function(src, cb) {
             ethConnector.applyConstants(src, opts, cb);
@@ -18,14 +19,14 @@ exports.deployECCurve = function(opts, cb) {
         },
         function(result, cb) {
             compilationResult = result;
-            ethConnector.deploy(compilationResult.ECCurve.interface,
-                compilationResult.ECCurve.bytecode,
+            ethConnector.deploy(compilationResult.EC.interface,
+                compilationResult.EC.bytecode,
                 0,
                 0,
                 cb);
         },
-    ], function(err, ecCurve) {
+    ], function(err, ec) {
         if (err) return cb(err);
-        cb(null,ecCurve, compilationResult);
+        cb(null,ec, compilationResult);
     });
 };

@@ -4,8 +4,8 @@
 
 var verbose = false;
 
-var ecCurveHelper = require('../js/eccurve_helper.js');
-var ethConnector = require('../js/eth_connector');
+var ecCurveHelper = require('../ec_helper.js');
+var ethConnector = require('ethconnector');
 var assert = require("assert"); // node.js core module
 var async = require('async');
 var _ = require('lodash');
@@ -30,7 +30,7 @@ describe('ECCurve Test', function(){
     });
     it('should deploy a ecCurve ', function(done){
         this.timeout(20000);
-        ecCurveHelper.deployECCurve({}, function(err, _ecCurve) {
+        ecCurveHelper.deploy({}, function(err, _ecCurve) {
             assert.ifError(err);
             assert.ok(_ecCurve.address);
             ecCurve = _ecCurve;

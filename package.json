@@ -19,10 +19,6 @@
   "author": "Jordi Baylina",
   "license": "GPL-3.0",
   "dependencies": {
-    "async": "^2.0.1",
-    "bignumber.js": "^2.4.0",
-    "ethereumjs-testrpc": "^2.2.4",
-    "lodash": "^4.15.0",
-    "web3": "^0.17.0-alpha"
+    "ethconnector": "0.0.2"
   }
 }
