@@ -16,6 +16,7 @@ var ec = new EC('secp256k1');
 var n = new BigNumber('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F', 16);
 var gx = new BigNumber('79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798', 16);
 var gy = new BigNumber('483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8', 16);
+var n2 = new BigNumber('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141', 16);
 
 function log(S) {
     if (verbose) {
@@ -512,7 +513,7 @@ describe('ECCurve Test', function(){
         ecCurve.publicKey.estimateGas(d, function(err, gas) {
             assert.ifError(err);
             log("Estimate gas: " +gas);
-            assert(gas<1000000,'Public key calculation should be lower that 1M');
+            assert(gas<1000000,'Public key calculation gas should be lower that 1M');
             done();
         });
     });
@@ -546,10 +547,18 @@ describe('ECCurve Test', function(){
     });
     it('Should follow associative property', function(done) {
         this.timeout(20000);
+
+        log("n: " + n.toString(10));
+        log("n2: " + n2.toString(10));
+        log("gx: " + gx.toString(10));
+        log("gy: " + gy.toString(10));
+
         var key1 = ec.genKeyPair();
         var key2 = ec.genKeyPair();
         var d1 = new BigNumber(key1.getPrivate().toString(16), 16);
         var d2 = new BigNumber(key2.getPrivate().toString(16), 16);
+        log("priv1:" + d1.toString(10));
+        log("priv2:" + d2.toString(10));
         var pub1_x, pub1_y;
         var pub2_x, pub2_y;
         var pub12_x, pub12_y;
@@ -576,7 +585,9 @@ describe('ECCurve Test', function(){
                 });
             },
             function(cb) {
-                ecCurve.publicKey(d1.add(d2).mod(n), function(err, res) {
+                var d12 = (d1.add(d2)).mod(n2);
+                log("priv12:" + d12.toString(10));
+                ecCurve.publicKey(d12, function(err, res) {
                     if (err) return cb(err);
                     pub12_x = res[0];
                     pub12_y = res[1];
@@ -593,6 +604,7 @@ describe('ECCurve Test', function(){
 
                     ecCurve._inverse(res[2], function(err, inv) {
                         if (err) return cb(err);
+                        log("Inv test2: "+ inv.mul(res[2]).mod(n).toString(10));
                         add12_x = add12_x.mul(inv).mod(n);
                         add12_y = add12_y.mul(inv).mod(n);
                         log("add12_x:" + add12_x.toString(10));
