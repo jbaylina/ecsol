@@ -1,6 +1,6 @@
 {
   "name": "ecsol",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "Solidity Elliptic Curve Library",
   "main": "ec_helper.js",
   "directories": {
@@ -19,6 +19,6 @@
   "author": "Jordi Baylina",
   "license": "GPL-3.0",
   "dependencies": {
-    "ethconnector": "0.0.4"
+    "ethconnector": "0.0.5"
   }
 }

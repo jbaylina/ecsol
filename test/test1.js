@@ -541,6 +541,10 @@ describe('ECCurve Test', function(){
                 log("k2_1y:" + k2_1y.toString(10));
                 assert.equal(k1_2x.toString(10), k2_1x.toString(10));
                 assert.equal(k1_2y.toString(10), k2_1y.toString(10));
+
+                var kd = key1.derive(key2.getPublic()).toString(10);
+                log("keyDerived: " + kd);
+                assert.equal(k1_2x.toString(10), kd);
                 done();
             });
         });
