@@ -1,10 +1,10 @@
 # ecsol
 
-This is an implementation of ellipctic curve secp256k in 100% written in solidity.
+This is an implementation of elliptic curve secp256k which is 100% written in Solidity.
 
 ### Benchmark
 
-Calculate a public key from a private key takes about 800,000 gas.
+Calculating a public key from a private key takes about 800,000 gas.
 
 ### How to use.
 
