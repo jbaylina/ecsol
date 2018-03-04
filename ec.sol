@@ -7,9 +7,29 @@ contract EC {
     uint256 constant n = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F;
     uint256 constant a = 0;
     uint256 constant b = 7;
+    uint256[] public gxs;
+    uint256[] public gys;
+    uint256[] public gzs;
 
     function EC()
     {
+        gxs.push(gx);
+        gys.push(gy);
+        gzs.push(1);
+    }
+    
+    function prepare(uint count) public
+    {
+        require(gxs.length < 256);
+        uint256 x = gxs[gxs.length - 1];
+        uint256 y = gys[gys.length - 1];
+        uint256 z = gzs[gzs.length - 1];
+        for (uint j = 0; j < count && gxs.length < 256; j++) {
+            (x,y,z) = _ecDouble(x,y,z);
+            gxs.push(x);
+            gys.push(y);
+            gzs.push(z);
+        }
     }
 
     function _jAdd( uint256 x1,uint256 z1,
@@ -154,13 +174,22 @@ contract EC {
     function publicKey(uint256 privKey) constant
         returns(uint256 qx, uint256 qy)
     {
-        uint256 x;
-        uint256 y;
-        uint256 z;
-        (x,y,z) = _ecMul(privKey, gx, gy, 1);
-        z = _inverse(z);
-        qx = mulmod(x , z ,n);
-        qy = mulmod(y , z ,n);
+        uint256 acx = 0;
+        uint256 acy = 0;
+        uint256 acz = 1;
+
+        if (privKey == 0) {
+            return (0,0);
+        }
+
+        for (uint i = 0; i < 256; i++) {
+            if (((privKey >> i) & 1) != 0) {
+                (acx,acy,acz) = _ecAdd(acx,acy,acz, gxs[i],gys[i],gzs[i]);
+            }
+        }
+        
+        acz = _inverse(acz);
+        (qx,qy) = (mulmod(acx,acz,n),mulmod(acy,acz,n));
     }
 
     function deriveKey(uint256 privKey, uint256 pubX, uint256 pubY) constant
